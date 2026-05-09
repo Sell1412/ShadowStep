@@ -19,7 +19,7 @@ class SHADOWSTEP_API USuspicionIndicator : public UUserWidget
 	
 
 	UFUNCTION(BlueprintCallable,Category="Suspicion")
-	void SetWidgetOffestAndRotation(float OffsetDistanceFar, float OffsetDistanceClose, float RotationAngle,FVector EnemyWorldPosition);
+	void SetWidgetOffestAndRotation(float OffsetDistance, float RotationToEnemyInScreenSpace,FVector EnemyWorldPosition);
 	
 	UFUNCTION(BlueprintCallable,Category="Suspicion")
 	void UpdateOpacity(float SusValue, float DeltaTime);
