@@ -84,7 +84,7 @@ void USuspicionIndicator::SetWidgetOffestAndRotation(float OffsetDistance,float 
     SetRenderTransform(Transform);
 
 }
-
+// Mouse based
 //FVector2D ViewportSize;
 //if (GEngine && GEngine->GameViewport)
 //{
