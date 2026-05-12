@@ -29,9 +29,18 @@ class SHADOWSTEP_API USuspicionIndicator : public UUserWidget
 	UPROPERTY(EditAnywhere, Category = "Suspicion")
 	float currentOpacity = 0.0f;
 
-	UPROPERTY(EditAnywhere, Category = "Suspicion | Scale",meta=(AllowPrivateAccess=true))
+	UPROPERTY(EditAnywhere, Category = "Suspicion ",meta=(AllowPrivateAccess=true))
 	float maxWorldDistance = 1500.0f;
 
-	UPROPERTY(EditAnywhere, Category = "Suspicion | Distance ",meta=(AllowPrivateAccess=true))
+	UPROPERTY(EditAnywhere, Category = "Suspicion  ",meta=(AllowPrivateAccess=true))
 	float maxScreenDist = 300.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Suspicion ",meta=(AllowPrivateAccess=true))
+	float appearSpeed = 1.f;
+
+	UPROPERTY(EditAnywhere, Category = "Suspicion  ",meta=(AllowPrivateAccess=true))
+	float disappearSpeed = 0.8f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Value", meta = (AllowPrivateAccess = true))
+	TObjectPtr<AActor> owningActor;
 };

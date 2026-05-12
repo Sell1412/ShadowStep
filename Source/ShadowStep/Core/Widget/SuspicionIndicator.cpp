@@ -84,82 +84,15 @@ void USuspicionIndicator::SetWidgetOffestAndRotation(float OffsetDistance,float 
     SetRenderTransform(Transform);
 
 }
-// Mouse based
-//FVector2D ViewportSize;
-//if (GEngine && GEngine->GameViewport)
-//{
-//	GEngine->GameViewport->GetViewportSize(ViewportSize);
-//}
-//float ViewportScale = 1.0f;
-//if (GEngine && GEngine->GameViewport)
-//{
-//	GEngine->GameViewport->GetViewportSize(ViewportSize);
-//	ViewportScale = UWidgetLayoutLibrary::GetViewportScale(this);
-//}
 
-//   // ScreenCenter in Widget-Space (nicht in Screen-Pixel-Space)
-//   FVector2D ScreenCenter = (ViewportSize * 0.5f) / ViewportScale;
-
-//   // --- 2. Gegner auf Screen projizieren ---
-//   APlayerController* PC = GetOwningPlayer();
-//   if (!PC) return;
-
-   //FVector2D EnemyScreenPos;
-   //bool bIsOnScreen = PC->ProjectWorldLocationToScreen(
-   //	EnemyWorldPosition, EnemyScreenPos, true);
-
-//   EnemyScreenPos /= ViewportScale; 
-
-//   FVector2D DeltaToEnemy = EnemyScreenPos - ScreenCenter; 
-//   float ScreenDistance = DeltaToEnemy.Size();
-
-//   float NormalizedDist = FMath::Clamp(ScreenDistance / maxScreenDist, 0.0f, 1.0f);
-
-//   // Jetzt Lerp: nah = kleiner Offset, weit = großer Offset
-//   float FinalOffset = FMath::Lerp(OffsetDistanceClose, OffsetDistanceFar, NormalizedDist);
-
-//   // --- 4. Position auf dem Offset-Kreis berechnen ---
-
-//   float AngleRad = FMath::DegreesToRadians(RotationToEnemyInScreenSpace);
-
-//   FVector2D WidgetPosition;
-//   WidgetPosition.X = ScreenCenter.X + FMath::Cos(AngleRad) * FinalOffset;
-//   WidgetPosition.Y = ScreenCenter.Y + FMath::Sin(AngleRad) * FinalOffset;
-
-//   // --- 5. Widget-Größe abziehen damit es zentriert auf dem Kreispunkt sitzt ---
-
-   //FVector2D WidgetSize = GetDesiredSize();
-
-//   FVector2D FinalPosition = WidgetPosition - (WidgetSize * 0.5f);
-//   SetPositionInViewport(FinalPosition, false);
-
-//   // --- 6. Widget rotieren damit die Bar zum Gegner zeigt ---
-
-//   float FinalAngle = RotationToEnemyInScreenSpace + 90.0f;
-
-//   FWidgetTransform Transform;
-//   Transform.Angle = FinalAngle;
-
-   //// Change also the Scale to a max 0.5 if the Enemy is far away and to 1.0 if the Enemy is close.
-   //// Based on the distance to the enemy in the World Position. The further the Enemy is away, the smaller the Widget. The closer the Enemy is, the bigger the Widget. This is to give the Player a better visual feedback of how far away the Enemy is.
-   //float WorldDistance = FVector::Dist(GetOwningPlayerPawn()->GetActorLocation(), EnemyWorldPosition);
-
-   //float NormalizedWorldDist = FMath::Clamp(WorldDistance / maxWorldDistance, 0.0f, 1.0f);
-   //float FinalScale = FMath::Lerp(1.0f, 0.3f, NormalizedWorldDist);
-
-   //Transform.Scale = FVector2D(FinalScale, FinalScale);
-
-//   Transform.Translation = FVector2D::ZeroVector;
-//   Transform.Shear = FVector2D::ZeroVector;
-//   SetRenderTransform(Transform);
 
 void USuspicionIndicator::UpdateOpacity(float SusValue, float DeltaTime)
 {
-    float TargetOpacity = (SusValue > 0.01f) ? 1.0f : 0.0f;
+    float targetOpacity = (SusValue > 0.01f) ? 1.0f : 0.0f;
 
-	float FadeSpeed = (TargetOpacity > currentOpacity) ? 5.0f : 2.0f;
+	float fadeSpeed = (targetOpacity > currentOpacity) ? appearSpeed : disappearSpeed;
 
-    currentOpacity = FMath::FInterpTo(currentOpacity, TargetOpacity, DeltaTime, FadeSpeed);
+    currentOpacity = FMath::FInterpTo(currentOpacity, targetOpacity, DeltaTime, fadeSpeed);
     
     // Auf Widget anwenden
     SetRenderOpacity(currentOpacity);
