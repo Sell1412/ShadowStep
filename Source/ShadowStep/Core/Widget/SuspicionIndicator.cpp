@@ -92,7 +92,7 @@ void USuspicionIndicator::UpdateOpacity(float SusValue, float DeltaTime)
 
 	float fadeSpeed = (targetOpacity > currentOpacity) ? appearSpeed : disappearSpeed;
 
-    currentOpacity = FMath::FInterpTo(currentOpacity, targetOpacity, DeltaTime, fadeSpeed);
+    currentOpacity = FMath::Clamp( FMath::FInterpTo(currentOpacity, targetOpacity, DeltaTime, fadeSpeed),0.f,1.f);
     
     // Auf Widget anwenden
     SetRenderOpacity(currentOpacity);
