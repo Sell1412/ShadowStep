@@ -32,3 +32,20 @@ void UShadowManager::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 	// ...
 }
 
+AActor* UShadowManager::SpawnActor(UClass* a_objectToSpawn, FVector a_SpawnLocation)
+{
+	if (!a_objectToSpawn)
+	{
+		return nullptr;
+	}
+
+	FTransform SpawnTransform(FRotator::ZeroRotator, a_SpawnLocation, FVector::OneVector);
+
+	FActorSpawnParameters SpawnParameters;
+	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+
+	AActor* spawnedActor = GetWorld()->SpawnActor(a_objectToSpawn, &SpawnTransform, SpawnParameters);
+
+	return spawnedActor;
+}

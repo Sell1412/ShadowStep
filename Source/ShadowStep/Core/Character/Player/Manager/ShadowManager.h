@@ -18,6 +18,9 @@ public:
 	
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	UFUNCTION(BlueprintCallable)
+	AActor* SpawnActor(UClass* a_objectToSpawn, FVector a_SpawnLocation);
+
 protected:
 	
 	virtual void BeginPlay() override;
