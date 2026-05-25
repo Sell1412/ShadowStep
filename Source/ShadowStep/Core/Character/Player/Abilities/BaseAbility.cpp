@@ -7,26 +7,26 @@ UBaseAbility::UBaseAbility(const FObjectInitializer& ObjectInizializer)
 {
 }
 
-void UBaseAbility::Tick_Implementation()
+void UBaseAbility::AbilityTick_Implementation()
 {
 }
 
-void UBaseAbility::OnAbilityActivate_Implementation()
+void UBaseAbility::ActivateAbility_Implementation()
 {
 }
 
-void UBaseAbility::OnAbilityDeactivated_Implementation()
+void UBaseAbility::DeactivateAbility_Implementation()
 {
 }
 
-void UBaseAbility::Initialise_Implementation(UShadowManager* ShadowManager)
+void UBaseAbility::InitialiseAbility_Implementation(UShadowManager* a_ShadowManger)
 {
 }
 
-void UBaseAbility::InteractionButtonStarted_Implementation()
+void UBaseAbility::StartInteraction_Implementation()
 {
 }
 
-void UBaseAbility::InteractionButtonReleased_Implementation()
+void UBaseAbility::ReleaseInteraction_Implementation()
 {
 }

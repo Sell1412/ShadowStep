@@ -3,26 +3,3 @@
 
 #include "ShadowLightAbility.h"
 
-void UShadowLightAbility::Tick_Implementation()
-{
-}
-
-void UShadowLightAbility::OnAbilityActivate_Implementation()
-{
-}
-
-void UShadowLightAbility::OnAbilityDeactivated_Implementation()
-{
-}
-
-void UShadowLightAbility::Initialise_Implementation(UShadowManager* a_ShadowManger)
-{
-}
-
-void UShadowLightAbility::InteractionButtonStarted_Implementation()
-{
-}
-
-void UShadowLightAbility::InteractionButtonReleased_Implementation()
-{
-}

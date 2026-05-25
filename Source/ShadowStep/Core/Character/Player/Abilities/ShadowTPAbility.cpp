@@ -1,31 +1,19 @@
 // Copyright (c) 2026 Core Memory Entertainment GbR. All rights reserved.
 
-
 #include "ShadowTPAbility.h"
+#include "Logging/StructuredLog.h"
 
-void UShadowTPAbility::Tick_Implementation()
+void UShadowTPAbility::Telport()
 {
-
+	UE_LOGFMT(LogTemp, Warning, "Teleport");
 }
 
-void UShadowTPAbility::OnAbilityActivate_Implementation()
+void UShadowTPAbility::SetLocationNotValid()
 {
-
-}
-
-void UShadowTPAbility::OnAbilityDeactivated_Implementation()
-{
-
-}
-
-void UShadowTPAbility::Initialise_Implementation(UShadowManager* a_ShadowManger)
-{
-}
-
-void UShadowTPAbility::InteractionButtonStarted_Implementation()
-{
-}
-
-void UShadowTPAbility::InteractionButtonReleased_Implementation()
-{
+	if(isLocationValid)
+	{
+		isLocationValid = false;
+		TPLocation = FVector::ZeroVector;
+		TPNormal = FVector::ZeroVector;
+	}
 }

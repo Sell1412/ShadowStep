@@ -19,29 +19,28 @@ public:
 	UBaseAbility(const FObjectInitializer& ObjectInizializer);
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Ability")
-	void  Tick();
-	virtual void Tick_Implementation();
-
+	void  AbilityTick();
+	virtual void  AbilityTick_Implementation();
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Ability")
-	void  OnAbilityActivate();
-	virtual void OnAbilityActivate_Implementation();
+	void ActivateAbility();
+	virtual void ActivateAbility_Implementation();
 	
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Ability")
-	void  OnAbilityDeactivated();
-	virtual void OnAbilityDeactivated_Implementation();
+	void DeactivateAbility();
+	virtual void DeactivateAbility_Implementation();
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Ability")
-	void Initialise(UShadowManager* a_ShadowManger);
-	virtual void Initialise_Implementation(UShadowManager* a_ShadowManger);
+	void InitialiseAbility(UShadowManager* a_ShadowManger);
+	virtual void InitialiseAbility_Implementation(UShadowManager* a_ShadowManger);
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Ability")
-	void InteractionButtonStarted();
-	virtual void InteractionButtonStarted_Implementation();
+	void StartInteraction();
+	virtual void StartInteraction_Implementation();
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Ability")
-	void InteractionButtonReleased();
-	virtual void InteractionButtonReleased_Implementation();
+	void ReleaseInteraction();
+	virtual void ReleaseInteraction_Implementation();
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ability", meta = (AllowPrivateAccess=true))

@@ -17,15 +17,5 @@ class SHADOWSTEP_API UShadowLightAbility : public UBaseAbility
 {
 	GENERATED_BODY()
 	
-	virtual void Tick_Implementation() override;
 
-	virtual void OnAbilityActivate_Implementation() override;
-
-	virtual	void OnAbilityDeactivated_Implementation() override;
-
-	virtual void Initialise_Implementation(UShadowManager* a_ShadowManger) override;
-
-	virtual void InteractionButtonStarted_Implementation() override;
-
-	virtual void InteractionButtonReleased_Implementation() override;
 };

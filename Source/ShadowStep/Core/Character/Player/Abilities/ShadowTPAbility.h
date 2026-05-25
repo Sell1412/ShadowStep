@@ -17,15 +17,29 @@ class SHADOWSTEP_API UShadowTPAbility : public UBaseAbility
 {
 	GENERATED_BODY()
 	
-	virtual void Tick_Implementation() override;
+protected:
 
-	virtual void OnAbilityActivate_Implementation() override;
+	UFUNCTION(BlueprintCallable, Category = "Ability")
+	void Telport();
 
-	virtual	void OnAbilityDeactivated_Implementation() override;
+	void SetLocationNotValid();
 
-	virtual void Initialise_Implementation(UShadowManager* a_ShadowManger) override;
-
-	virtual void InteractionButtonStarted_Implementation() override;
-
-	virtual void InteractionButtonReleased_Implementation() override;
+	UPROPERTY(BlueprintReadWrite, Category = "Teleportation")
+	bool isLocationValid = false;
+	UPROPERTY(BlueprintReadWrite, Category = "Teleportation")
+	FVector TPLocation = FVector::ZeroVector;
+	UPROPERTY(BlueprintReadWrite, Category = "Teleportation")
+	FVector TPNormal = FVector::ZeroVector;
+	
+	UPROPERTY(BlueprintReadWrite, Category = "Teleportation")
+	bool isLastTPPointValid = false;
+	UPROPERTY(BlueprintReadWrite, Category = "Teleportation")
+	FVector lastValidTPPoint = FVector::ZeroVector;
+	
+	UPROPERTY(BlueprintReadWrite, Category = "Teleportation")
+	FVector lastValidTPNormal = FVector::ZeroVector;
+	UPROPERTY(BlueprintReadWrite, Category = "Teleportation")
+	FVector lastModifyedTPLocation = FVector::ZeroVector;
+	UPROPERTY(BlueprintReadWrite, Category = "Teleportation")
+	float validTeleportPointRadius = 100.f;
 };
