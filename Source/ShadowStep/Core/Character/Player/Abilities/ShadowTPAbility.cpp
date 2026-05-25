@@ -1,19 +1,38 @@
 // Copyright (c) 2026 Core Memory Entertainment GbR. All rights reserved.
 
 #include "ShadowTPAbility.h"
-#include "Logging/StructuredLog.h"
 
 void UShadowTPAbility::Telport()
 {
 	UE_LOGFMT(LogTemp, Warning, "Teleport");
 }
 
-void UShadowTPAbility::SetLocationNotValid()
+bool UShadowTPAbility::TryValidateTeleportLocation()
 {
-	if(isLocationValid)
+	// If the last teleport point is valid, check if the current teleport point is within a certain radius of the last valid teleport point
+	if (isLastTPPointValid)
 	{
-		isLocationValid = false;
-		TPLocation = FVector::ZeroVector;
-		TPNormal = FVector::ZeroVector;
+		// If the teleport point is in the range of last valid tppoint, set this as current teleport point
+		float distance = FVector::Distance(TPLocation, lastValidTPPoint);
+		if (distance <= validTeleportPointRadius)
+		{
+			TPLocation = lastValidTPPoint;
+			TPNormal = lastValidTPNormal;
+			modifyedTPLocation = lastModifyedTPLocation;
+		}
+		// Set last valid tppoint invalid
+		else
+		{
+			isLastTPPointValid = false;
+			lastValidTPNormal = FVector::ZeroVector;
+			lastValidTPPoint = FVector::ZeroVector;
+			lastModifyedTPLocation = FVector::ZeroVector;
+			return true;
+		}
 	}
+
+	isLocationValid = false;
+	TPLocation = FVector::ZeroVector;
+	TPNormal = FVector::ZeroVector;
+	return false;
 }

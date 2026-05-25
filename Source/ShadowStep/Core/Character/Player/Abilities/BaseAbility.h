@@ -42,7 +42,17 @@ public:
 	void ReleaseInteraction();
 	virtual void ReleaseInteraction_Implementation();
 
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Ability")
+	void ResetAbilityCooldown(float a_cooldown);
+	virtual void ResetAbilityCooldown_Implementation(float a_cooldown);
+
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ability", meta = (AllowPrivateAccess=true))
-	float ManaCost = 0;
+	float manaCost = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ability")
+	float cooldown = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ability")
+	bool canUseAbility = false;
 };

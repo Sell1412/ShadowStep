@@ -30,3 +30,7 @@ void UBaseAbility::StartInteraction_Implementation()
 void UBaseAbility::ReleaseInteraction_Implementation()
 {
 }
+
+void UBaseAbility::ResetAbilityCooldown_Implementation(float a_cooldown)
+{
+}

@@ -22,24 +22,34 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Ability")
 	void Telport();
 
-	void SetLocationNotValid();
+	UFUNCTION(BlueprintCallable, Category = "Ability")
+	bool TryValidateTeleportLocation();
 
 	UPROPERTY(BlueprintReadWrite, Category = "Teleportation")
 	bool isLocationValid = false;
+
 	UPROPERTY(BlueprintReadWrite, Category = "Teleportation")
 	FVector TPLocation = FVector::ZeroVector;
+
 	UPROPERTY(BlueprintReadWrite, Category = "Teleportation")
 	FVector TPNormal = FVector::ZeroVector;
 	
 	UPROPERTY(BlueprintReadWrite, Category = "Teleportation")
 	bool isLastTPPointValid = false;
+
 	UPROPERTY(BlueprintReadWrite, Category = "Teleportation")
 	FVector lastValidTPPoint = FVector::ZeroVector;
 	
+
+	UPROPERTY(BlueprintReadWrite, Category = "Teleportation")
+	FVector modifyedTPLocation = FVector::ZeroVector;
+
 	UPROPERTY(BlueprintReadWrite, Category = "Teleportation")
 	FVector lastValidTPNormal = FVector::ZeroVector;
+
 	UPROPERTY(BlueprintReadWrite, Category = "Teleportation")
 	FVector lastModifyedTPLocation = FVector::ZeroVector;
+
 	UPROPERTY(BlueprintReadWrite, Category = "Teleportation")
 	float validTeleportPointRadius = 100.f;
 };
