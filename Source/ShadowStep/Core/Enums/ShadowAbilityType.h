@@ -12,7 +12,7 @@
 enum class  EShadowAbilityType : uint8
 {
 	SAT_TP,
-	SAT_LIGHT,
-	SAT_STONE
+	SAT_STONE,
+	SAT_LIGHT
 };
 

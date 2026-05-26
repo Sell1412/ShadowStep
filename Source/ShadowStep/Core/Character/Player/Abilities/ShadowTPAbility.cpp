@@ -19,6 +19,7 @@ bool UShadowTPAbility::TryValidateTeleportLocation()
 			TPLocation = lastValidTPPoint;
 			TPNormal = lastValidTPNormal;
 			modifyedTPLocation = lastModifyedTPLocation;
+			return true;
 		}
 		// Set last valid tppoint invalid
 		else
@@ -27,7 +28,7 @@ bool UShadowTPAbility::TryValidateTeleportLocation()
 			lastValidTPNormal = FVector::ZeroVector;
 			lastValidTPPoint = FVector::ZeroVector;
 			lastModifyedTPLocation = FVector::ZeroVector;
-			return true;
+			return false;
 		}
 	}
 

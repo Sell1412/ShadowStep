@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "UObject/Object.h"
 #include "../Manager/ShadowManager.h"
+#include "../../../Enums/ShadowAbilityType.h"
 #include "BaseAbility.generated.h"
 
 /**
@@ -55,4 +56,7 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ability")
 	bool canUseAbility = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ability")
+	EShadowAbilityType shadowAbilityType = EShadowAbilityType::SAT_TP;
 };
