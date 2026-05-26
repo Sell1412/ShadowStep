@@ -1,6 +1,7 @@
 // Copyright (c) 2026 Core Memory Entertainment GbR. All rights reserved.
 
 #include "ShadowTPAbility.h"
+#include "Camera/CameraComponent.h"
 
 void UShadowTPAbility::Telport()
 {
@@ -28,7 +29,6 @@ bool UShadowTPAbility::TryValidateTeleportLocation()
 			lastValidTPNormal = FVector::ZeroVector;
 			lastValidTPPoint = FVector::ZeroVector;
 			lastModifyedTPLocation = FVector::ZeroVector;
-			return false;
 		}
 	}
 
@@ -36,4 +36,22 @@ bool UShadowTPAbility::TryValidateTeleportLocation()
 	TPLocation = FVector::ZeroVector;
 	TPNormal = FVector::ZeroVector;
 	return false;
+}
+
+bool UShadowTPAbility::GetHitPointOverTheEdge(FHitResult& a_outHit)
+{
+	if (!ew_playerCamera)
+	{
+		UE_LOGFMT(LogTemp, Warning, "Player Camera is not set in ShadowTPAbility");
+		return false;
+	}
+
+	FVector forwardVector = ew_playerCamera->GetForwardVector()*ew_cameraHitPointExtend;
+	FVector startLocation = forwardVector + TPLocation + FVector(0.0f, 0.0f, ew_HitPointExtendHightOffset);
+
+	FVector endLocation = startLocation + FVector(0.0f, 0.0f, ew_hitPointExtendDownOffset);
+	FCollisionShape collisionShape = FCollisionShape::MakeSphere(ew_playerRadius);
+	bool outHit = GetWorld()->SweepSingleByChannel (a_outHit, startLocation, endLocation, FQuat::Identity, ECC_Visibility, collisionShape);
+
+	return outHit;
 }
