@@ -23,13 +23,11 @@ protected:
 	// Functions
 	//-------------------------------------------------------
 	UFUNCTION(BlueprintCallable, Category = "Ability")
-	void Telport();
-
-	UFUNCTION(BlueprintCallable, Category = "Ability")
 	bool TryValidateTeleportLocation();
 
 	UFUNCTION(BlueprintCallable, Category = "Ability")
 	bool GetHitPointOverTheEdge(FHitResult& a_outHit);
+
 
 	// Properties
 	//-------------------------------------------------------
@@ -64,23 +62,23 @@ protected:
 	float validTeleportPointRadius = 100.f;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Player")
-	float ew_playerRadius = 20.0f;
+	float PlayerRadius = 20.0f;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Player")
-	float ew_playerHalfHeight = 90.0f;
+	float PlayerHalfHeight = 90.0f;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Offset")
-	float ew_HitPointExtendHightOffset = 250.0f;
+	float HitPointExtendHightOffset = 250.0f;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Offset")
-	float ew_hitPointExtendDownOffset = -400.0f;
+	float HitPointExtendDownOffset = -400.0f;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Wall")
-	float ew_cameraHitPointExtend = 50.0f;
+	float CameraHitPointExtend = 50.0f;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Components")
-	TObjectPtr<UShadowManager> ew_shadowManager = nullptr;
+	TObjectPtr<UShadowManager> ShadowManager = nullptr;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Components")
-	TObjectPtr<UCameraComponent> ew_playerCamera = nullptr;
+	TObjectPtr<UCameraComponent> PlayerCamera = nullptr;
 };

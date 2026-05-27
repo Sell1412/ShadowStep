@@ -24,14 +24,16 @@ void UShadowStoneAbility::CalculateVelocity(FVector StartPoint, FVector& LaunchV
 
 	FVector lineTraceEndPoint = cameraForwardVector * MaxThrowDistance + cameraLocation;
 
+	// Check if the line trace hits anything
 	FHitResult hitResult;
 	FCollisionQueryParams Params;
 	Params.AddIgnoredActor(ShadowManager->GetOwner());
 	GetWorld()->LineTraceSingleByChannel(hitResult, cameraLocation, lineTraceEndPoint, ECollisionChannel::ECC_Visibility, Params);
 
+	// If hit use hit location, otherwise use linetraceendpoint as hitLocation
 	FVector hitLocation = hitResult.bBlockingHit ? hitResult.Location : lineTraceEndPoint;
 
-
+	// Calculate the flight time based on the distance to the hit location and the normal throw speed
 	float calculatedFlightTime = FVector::Distance(hitLocation, StartPoint)/NormalThrowSpeed;
 	FVector baseVelocity = (hitLocation - StartPoint) / calculatedFlightTime;
 	float gravityZ = (ShadowManager->GetWorld()->GetGravityZ() * 0.5)* calculatedFlightTime;

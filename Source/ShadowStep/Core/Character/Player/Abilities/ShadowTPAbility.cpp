@@ -3,10 +3,6 @@
 #include "ShadowTPAbility.h"
 #include "Camera/CameraComponent.h"
 
-void UShadowTPAbility::Telport()
-{
-	UE_LOGFMT(LogTemp, Warning, "Teleport");
-}
 
 bool UShadowTPAbility::TryValidateTeleportLocation()
 {
@@ -40,17 +36,19 @@ bool UShadowTPAbility::TryValidateTeleportLocation()
 
 bool UShadowTPAbility::GetHitPointOverTheEdge(FHitResult& a_outHit)
 {
-	if (!ew_playerCamera)
+	if (!PlayerCamera)
 	{
 		UE_LOGFMT(LogTemp, Warning, "Player Camera is not set in ShadowTPAbility");
 		return false;
 	}
 
-	FVector forwardVector = ew_playerCamera->GetForwardVector()*ew_cameraHitPointExtend;
-	FVector startLocation = forwardVector + TPLocation + FVector(0.0f, 0.0f, ew_HitPointExtendHightOffset);
+	// Calculate the start and end location for the sweep test based on the player's camera forward vector, the teleport location, and the defined offsets
+	FVector forwardVector = PlayerCamera->GetForwardVector()*CameraHitPointExtend;
+	FVector startLocation = forwardVector + TPLocation + FVector(0.0f, 0.0f, HitPointExtendHightOffset);
+	FVector endLocation = startLocation + FVector(0.0f, 0.0f, HitPointExtendDownOffset);
 
-	FVector endLocation = startLocation + FVector(0.0f, 0.0f, ew_hitPointExtendDownOffset);
-	FCollisionShape collisionShape = FCollisionShape::MakeSphere(ew_playerRadius);
+	// Perform a sweep test using a sphere collision shape to check for valid teleport locations
+	FCollisionShape collisionShape = FCollisionShape::MakeSphere(PlayerRadius);
 	bool outHit = GetWorld()->SweepSingleByChannel (a_outHit, startLocation, endLocation, FQuat::Identity, ECC_Visibility, collisionShape);
 
 	return outHit;
