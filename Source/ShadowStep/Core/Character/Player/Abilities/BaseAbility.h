@@ -8,6 +8,8 @@
 #include "../../../Enums/ShadowAbilityType.h"
 #include "BaseAbility.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAbilityDeactivated, float, CoolDownInSeconds);
+
 /**
  * 
  */
@@ -46,6 +48,9 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Ability")
 	void ResetAbilityCooldown(float a_cooldown);
 	virtual void ResetAbilityCooldown_Implementation(float a_cooldown);
+
+	UPROPERTY(BlueprintCallable, EditAnywhere, BlueprintAssignable)
+	FOnAbilityDeactivated OnAbilityDeactivated;
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ability", meta = (AllowPrivateAccess=true))
