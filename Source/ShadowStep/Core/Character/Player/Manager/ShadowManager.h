@@ -4,8 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "../Abilities/BaseAbility.h"
 #include "ShadowManager.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAbilityUsed, class UBaseAbility*, Ability);
 
 UCLASS(Blueprintable, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class SHADOWSTEP_API UShadowManager : public UActorComponent
@@ -15,11 +17,14 @@ class SHADOWSTEP_API UShadowManager : public UActorComponent
 public:	
 	UShadowManager();
 	
-	
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	UFUNCTION(BlueprintCallable)
 	AActor* SpawnActor(UClass* a_objectToSpawn, FVector a_SpawnLocation);
+
+public:
+	UPROPERTY(BlueprintCallable, BlueprintAssignable)
+	FOnAbilityUsed OnAbilityUsed;
 
 protected:
 	
