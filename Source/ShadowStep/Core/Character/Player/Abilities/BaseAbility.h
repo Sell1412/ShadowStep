@@ -50,7 +50,7 @@ public:
 	virtual void ResetAbilityCooldown_Implementation(float a_cooldown);
 
 	UPROPERTY(BlueprintCallable, EditAnywhere, BlueprintAssignable)
-	FOnAbilityDeactivated OnAbilityDeactivated;
+	FOnAbilityDeactivated OnAbilitySuccessfullyUsed;
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ability", meta = (AllowPrivateAccess=true))
