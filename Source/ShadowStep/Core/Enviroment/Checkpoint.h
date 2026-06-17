@@ -28,7 +28,7 @@ public:
 
 
 public:
-	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Default")
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Default|Value")
 	bool bShouldLoadNewArea{false};
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Default", meta = (EditCondition = "bShouldLoadNewArea", EditConditionHides))
