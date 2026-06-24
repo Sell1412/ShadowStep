@@ -8,7 +8,7 @@ public class ShadowStep : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" , "AIModule", "GameplayTags" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" , "AIModule", "GameplayTags", "DeveloperSettings" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 
