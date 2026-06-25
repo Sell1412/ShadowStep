@@ -83,6 +83,9 @@ private:
 	/// </summary>
 	void FinishLoading();
 
+	void OnTargetLevelLoaded(UWorld* world);
+
+	void CleanUpLoadingScreen();
 	/// <summary>
 	/// On Finished Loading Transition Map, we check if the loaded map is the transition map (void), if so, we can be sure that all old actors are destroyed and we can safely start loading the new level's data into RAM without risking hitching due to GC or streaming while the player is still in the old level. This also ensures that the loading screen remains visible during the entire loading process, providing a smoother user experience.
 	/// </summary>

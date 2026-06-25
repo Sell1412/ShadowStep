@@ -158,52 +158,101 @@ void UGameLoadingSubsystem::CheckCompletion() {
 }
 
 void UGameLoadingSubsystem::FinishLoading() {
-	// Reset handle if exists (shouldn't be necessary (since lambda cleans this in the end), but safe is safe)
 	if (m_postLoadHandle.IsValid()) {
 		FCoreUObjectDelegates::PostLoadMapWithWorld.Remove(m_postLoadHandle);
 	}
 
-	// Now check when the new level is actually ready to play ('PostLoadMapWithWorld' is called after 'InitializeActorsForPlay', which calls 'RegisterComponent' and 'BeginPlay')
-	m_postLoadHandle = FCoreUObjectDelegates::PostLoadMapWithWorld.AddWeakLambda(this, [this](UWorld* world) { // Use a weak lambda, since unreal doesn't gc doesn't -> would crash if global event is called and this is dead (unlikely)
+	// Nutze UObject-basierte Bindung statt einer rohen Lambda, um GC-Sicherheit zu garantieren
+	m_postLoadHandle = FCoreUObjectDelegates::PostLoadMapWithWorld.AddUObject(this, &UGameLoadingSubsystem::OnTargetLevelLoaded);
 
-		FString loadedMapName = world->GetName();
-		loadedMapName.RemoveFromStart(world->StreamingLevelsPrefix);
-
-		// Make sure this is our target level (not some other intermediate level, if one exists in the future)
-		if (loadedMapName == m_pendingLevel.GetAssetName()) {
-			// Broadcast finished
-			OnLoadingFinished.Broadcast(m_currentLevelName, m_targetLevelName);
-
-			// Unbind lambda (so we don't keep  multiple levels bound to it that are not used anymore)
-			FCoreUObjectDelegates::PostLoadMapWithWorld.Remove(m_postLoadHandle);
-			m_postLoadHandle.Reset();
-
-			if (world) { // Wait for 1 frame, so renderer catches up
-				world->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateWeakLambda(this, [this]() {
-
-					if (m_cachedSlateWidget.IsValid()) {
-						if (GetGameInstance()->GetGameViewportClient()) {
-							GetGameInstance()->GetGameViewportClient()->RemoveViewportWidgetContent(m_cachedSlateWidget.ToSharedRef());
-						}
-						m_cachedSlateWidget.Reset();
-					}
-
-					// Remove from root again
-					if (m_activeLoadingWidget) {
-						m_activeLoadingWidget->RemoveFromRoot();
-						m_activeLoadingWidget = nullptr;
-					}
-
-					m_isLoadingInProgress = false;
-					}));
-			}
-		}
-	});
-
-	// Map data is now in ram -> 'OpenLevel' will now be way faster
-	// NOTE: 'BeginPlay' will run and freeze main thread -> keep loading screen active
+	// Map-Wechsel einleiten
 	UGameplayStatics::OpenLevelBySoftObjectPtr(this, m_pendingLevel);
 }
+
+void UGameLoadingSubsystem::OnTargetLevelLoaded(UWorld* world) {
+	if (!world) return;
+
+	FString loadedMapName = world->GetName();
+	loadedMapName.RemoveFromStart(world->StreamingLevelsPrefix);
+
+	if (loadedMapName == m_pendingLevel.GetAssetName()) {
+		OnLoadingFinished.Broadcast(m_currentLevelName, m_targetLevelName);
+
+		FCoreUObjectDelegates::PostLoadMapWithWorld.Remove(m_postLoadHandle);
+		m_postLoadHandle.Reset();
+
+		// Next-Tick-Timer absolut sicher an das UObject binden!
+		FTimerDelegate nextTickDelegate;
+		nextTickDelegate.BindUObject(this, &UGameLoadingSubsystem::CleanUpLoadingScreen);
+		world->GetTimerManager().SetTimerForNextTick(nextTickDelegate);
+	}
+}
+void UGameLoadingSubsystem::CleanUpLoadingScreen() {
+	// 1. ZUERST aus dem Viewport entfernen (Slate leeren)
+	if (m_cachedSlateWidget.IsValid()) {
+		if (GetGameInstance() && GetGameInstance()->GetGameViewportClient()) {
+			GetGameInstance()->GetGameViewportClient()->RemoveViewportWidgetContent(m_cachedSlateWidget.ToSharedRef());
+		}
+		m_cachedSlateWidget.Reset();
+	}
+
+	// 2. DANACH das UWidget entwurzeln und für den GC freigeben
+	if (m_activeLoadingWidget) {
+		if (m_activeLoadingWidget->IsRooted()) {
+			m_activeLoadingWidget->RemoveFromRoot();
+		}
+		m_activeLoadingWidget = nullptr;
+	}
+
+	m_isLoadingInProgress = false;
+}
+//void UGameLoadingSubsystem::FinishLoading() {
+//	// Reset handle if exists (shouldn't be necessary (since lambda cleans this in the end), but safe is safe)
+//	if (m_postLoadHandle.IsValid()) {
+//		FCoreUObjectDelegates::PostLoadMapWithWorld.Remove(m_postLoadHandle);
+//	}
+//
+//	// Now check when the new level is actually ready to play ('PostLoadMapWithWorld' is called after 'InitializeActorsForPlay', which calls 'RegisterComponent' and 'BeginPlay')
+//	m_postLoadHandle = FCoreUObjectDelegates::PostLoadMapWithWorld.AddWeakLambda(this, [this](UWorld* world) { // Use a weak lambda, since unreal doesn't gc doesn't -> would crash if global event is called and this is dead (unlikely)
+//
+//		FString loadedMapName = world->GetName();
+//		loadedMapName.RemoveFromStart(world->StreamingLevelsPrefix);
+//
+//		// Make sure this is our target level (not some other intermediate level, if one exists in the future)
+//		if (loadedMapName == m_pendingLevel.GetAssetName()) {
+//			// Broadcast finished
+//			OnLoadingFinished.Broadcast(m_currentLevelName, m_targetLevelName);
+//
+//			// Unbind lambda (so we don't keep  multiple levels bound to it that are not used anymore)
+//			FCoreUObjectDelegates::PostLoadMapWithWorld.Remove(m_postLoadHandle);
+//			m_postLoadHandle.Reset();
+//
+//			if (world) { // Wait for 1 frame, so renderer catches up
+//				world->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateWeakLambda(this, [this]() {
+//
+//					if (m_cachedSlateWidget.IsValid()) {
+//						if (GetGameInstance()->GetGameViewportClient()) {
+//							GetGameInstance()->GetGameViewportClient()->RemoveViewportWidgetContent(m_cachedSlateWidget.ToSharedRef());
+//						}
+//						m_cachedSlateWidget.Reset();
+//					}
+//
+//					// Remove from root again
+//					if (m_activeLoadingWidget) {
+//						m_activeLoadingWidget->RemoveFromRoot();
+//						m_activeLoadingWidget = nullptr;
+//					}
+//
+//					m_isLoadingInProgress = false;
+//					}));
+//			}
+//		}
+//	});
+//
+//	// Map data is now in ram -> 'OpenLevel' will now be way faster
+//	// NOTE: 'BeginPlay' will run and freeze main thread -> keep loading screen active
+//	UGameplayStatics::OpenLevelBySoftObjectPtr(this, m_pendingLevel);
+//}
 
 
 void UGameLoadingSubsystem::OnFinishedLoadingTransitionMap(UWorld* a_loadedWorld) {
