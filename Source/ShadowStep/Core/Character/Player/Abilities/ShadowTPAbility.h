@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "UObject/Object.h"
 #include "BaseAbility.h"
+#include "Components/CapsuleComponent.h"
 #include "ShadowTPAbility.generated.h"
 
 class UShadowManager;
@@ -47,8 +48,6 @@ protected:
 	UPROPERTY(BlueprintReadWrite, Category = "Teleportation")
 	FVector lastValidTPPoint = FVector::ZeroVector;
 	
-
-
 	UPROPERTY(BlueprintReadWrite, Category = "Teleportation")
 	FVector modifyedTPLocation = FVector::ZeroVector;
 
@@ -81,4 +80,10 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite, Category = "Components")
 	TObjectPtr<UCameraComponent> PlayerCamera = nullptr;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Components")
+	TObjectPtr<UCapsuleComponent> PlayerCapsule = nullptr;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Range")
+	float TPRange = 2000.0f;
 };
