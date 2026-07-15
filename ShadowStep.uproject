@@ -7,25 +7,12 @@
 		{
 			"Name": "ShadowStep",
 			"Type": "Runtime",
-			"LoadingPhase": "Default",
-			"AdditionalDependencies": [
-				"Engine",
-				"CoreUObject",
-				"UMG",
-				"Blutility",
-				"DeveloperSettings"
-			]
+			"LoadingPhase": "Default"
 		},
 		{
 			"Name": "YATools",
 			"Type": "Editor",
-			"LoadingPhase": "PostEngineInit",
-			"AdditionalDependencies": [
-				"DeveloperSettings",
-				"CoreUObject",
-				"Engine",
-				"Blutility"
-			]
+			"LoadingPhase": "PostEngineInit"
 		}
 	],
 	"Plugins": [

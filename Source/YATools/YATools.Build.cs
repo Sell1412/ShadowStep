@@ -29,6 +29,7 @@ public class YATools : ModuleRules
             "BlueprintGraph",
             "ScriptableEditorWidgets",
             "EditorScriptingUtilities",
+            "DeveloperSettings"
         });
     }
 }
