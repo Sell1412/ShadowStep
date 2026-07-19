@@ -28,60 +28,69 @@ float USuspicionIndicator::GetEnemyRotationAngle(FVector EnemyLocation) const
 void USuspicionIndicator::SetWidgetOffestAndRotation(float OffsetDistance,float RotationToEnemyInScreenSpace,FVector EnemyWorldPosition)
 {
 
-    APlayerController* PC = GetOwningPlayer();
-    if (!PC) return;
+	APlayerController* PC = GetOwningPlayer();
+	if (!PC) return;
 
-    FVector2D ViewportSize;
-    if (GEngine && GEngine->GameViewport)
-        GEngine->GameViewport->GetViewportSize(ViewportSize);
+	// 1. SCHUTZ: Stelle sicher, dass der Pawn existiert, bevor wir seine Position abfragen
+	APawn* PlayerPawn = GetOwningPlayerPawn();
+	if (!PlayerPawn) return;
 
-    float ViewportScale = UWidgetLayoutLibrary::GetViewportScale(this);
-    FVector2D ScreenCenter = (ViewportSize * 0.5f) / ViewportScale;
+	// 2. SICHERER: Nutze den Player Controller für die Viewport-Größe statt GEngine
+	int32 ViewportSizeX, ViewportSizeY;
+	PC->GetViewportSize(ViewportSizeX, ViewportSizeY);
+
+	// Wenn der Viewport noch nicht bereit ist (Größe 0), brechen wir für diesen Frame ab
+	if (ViewportSizeX <= 0 || ViewportSizeY <= 0) return;
+
+	FVector2D ViewportSize(ViewportSizeX, ViewportSizeY);
+
+	float ViewportScale = UWidgetLayoutLibrary::GetViewportScale(this);
+
+	// 3. SCHUTZ: Division durch Null verhindern!
+	if (ViewportScale <= 0.0f)
+	{
+		ViewportScale = 1.0f; // Fallback auf Standard-Skalierung
+	}
+
+	FVector2D ScreenCenter = (ViewportSize * 0.5f) / ViewportScale;
 
     // --- World space angle calculation ---
-    // Get camera transform
-    FVector CameraLocation;
-    FRotator CameraRotation;
-    PC->GetPlayerViewPoint(CameraLocation, CameraRotation);
+	FVector CameraLocation;
+	FRotator CameraRotation;
+	PC->GetPlayerViewPoint(CameraLocation, CameraRotation);
 
-    // Head position
-    FVector HeadPosition = EnemyWorldPosition + FVector(0.f, 0.f, 200.f);
+	FVector HeadPosition = EnemyWorldPosition + FVector(0.f, 0.f, 200.f);
+	FVector DirectionToEnemy = (HeadPosition - CameraLocation).GetSafeNormal();
 
-    // Direction from camera to enemy in world space
-    FVector DirectionToEnemy = (HeadPosition - CameraLocation).GetSafeNormal();
+	FVector CamRight = FRotationMatrix(CameraRotation).GetScaledAxis(EAxis::Y);
+	FVector CamUp = FRotationMatrix(CameraRotation).GetScaledAxis(EAxis::Z);
 
-    // Project onto camera's right and up axes
-    // This gives us a 2D offset that works even when enemy is off-screen
-    FVector CamRight = FRotationMatrix(CameraRotation).GetScaledAxis(EAxis::Y);
-    FVector CamUp = FRotationMatrix(CameraRotation).GetScaledAxis(EAxis::Z);
+	float DotRight = FVector::DotProduct(DirectionToEnemy, CamRight);
+	float DotUp = FVector::DotProduct(DirectionToEnemy, CamUp);
 
-    float DotRight = FVector::DotProduct(DirectionToEnemy, CamRight);
-    float DotUp = FVector::DotProduct(DirectionToEnemy, CamUp);
+	float AngleDeg = FMath::RadiansToDegrees(FMath::Atan2(-DotUp, DotRight));
 
-    // Atan2 in screen space: X = right, Y = down (flip DotUp for screen coords)
-    float AngleDeg = FMath::RadiansToDegrees(FMath::Atan2(-DotUp, DotRight));
+	float AngleRad = FMath::DegreesToRadians(AngleDeg);
+	FVector2D WidgetPosition;
+	WidgetPosition.X = ScreenCenter.X + FMath::Cos(AngleRad) * OffsetDistance;
+	WidgetPosition.Y = ScreenCenter.Y + FMath::Sin(AngleRad) * OffsetDistance;
 
-    // --- Fixed offset position on circle ---
-    float AngleRad = FMath::DegreesToRadians(AngleDeg);
-    FVector2D WidgetPosition;
-    WidgetPosition.X = ScreenCenter.X + FMath::Cos(AngleRad) * OffsetDistance;
-    WidgetPosition.Y = ScreenCenter.Y + FMath::Sin(AngleRad) * OffsetDistance;
+	FVector2D WidgetSize = GetDesiredSize();
+	SetPositionInViewport(WidgetPosition - (WidgetSize * 0.5f), false);
 
-    FVector2D WidgetSize = GetDesiredSize();
-    SetPositionInViewport(WidgetPosition - (WidgetSize * 0.5f), false);
+	FWidgetTransform Transform;
+	Transform.Angle = AngleDeg + 90.0f;
 
-    // --- Rotate widget to point toward enemy ---
-    FWidgetTransform Transform;
-    Transform.Angle = AngleDeg + 90.0f;
-	float WorldDistance = FVector::Dist(GetOwningPlayerPawn()->GetActorLocation(), EnemyWorldPosition);
+	// Hier nutzen wir nun den oben bereits überprüften PlayerPawn
+	float WorldDistance = FVector::Dist(PlayerPawn->GetActorLocation(), EnemyWorldPosition);
 
 	float NormalizedWorldDist = FMath::Clamp(WorldDistance / maxWorldDistance, 0.0f, 1.0f);
 	float FinalScale = FMath::Lerp(1.5f, 0.5f, NormalizedWorldDist);
 
 	Transform.Scale = FVector2D(FinalScale, FinalScale);
-    Transform.Translation = FVector2D::ZeroVector;
-    Transform.Shear = FVector2D::ZeroVector;
-    SetRenderTransform(Transform);
+	Transform.Translation = FVector2D::ZeroVector;
+	Transform.Shear = FVector2D::ZeroVector;
+	SetRenderTransform(Transform);
 
 }
 
