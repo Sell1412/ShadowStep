@@ -9,7 +9,6 @@
 #include "BaseAbility.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAbilityDeactivated, float, CoolDownInSeconds);
-
 /**
  * 
  */

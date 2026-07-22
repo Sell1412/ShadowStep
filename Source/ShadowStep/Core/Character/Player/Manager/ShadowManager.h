@@ -8,6 +8,7 @@
 #include "ShadowManager.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAbilityUsed, class UBaseAbility*, Ability);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAbilityNoMana, float, ManaCost);
 
 UCLASS(Blueprintable, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class SHADOWSTEP_API UShadowManager : public UActorComponent
@@ -22,10 +23,14 @@ public:
 	UFUNCTION(BlueprintCallable)
 	AActor* SpawnActor(UClass* a_objectToSpawn, FVector a_SpawnLocation);
 
+
+
 public:
 	UPROPERTY(BlueprintCallable, BlueprintAssignable)
 	FOnAbilityUsed OnAbilityUsed;
 
+	UPROPERTY(BlueprintCallable, BlueprintAssignable)
+	FOnAbilityNoMana OnAbilityNoMana;
 protected:
 	
 	virtual void BeginPlay() override;
